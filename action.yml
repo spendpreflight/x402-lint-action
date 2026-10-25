@@ -1,0 +1,31 @@
+name: x402 Lint
+description: Free unpaid x402 challenge checks, heuristic Listing Guard score and public report badge. Operated by SpendPreflight.
+author: SpendPreflight
+branding:
+  icon: check-circle
+  color: green
+inputs:
+  urls:
+    description: Public, non-sensitive HTTPS endpoint URLs, one per line (maximum five). No credentials or request bodies.
+    required: true
+  comment:
+    description: Update one derived summary on same-repository pull requests when the token permits it. Forks are skipped.
+    default: 'true'
+  token:
+    description: GitHub token for optional PR comments only. No Lint API key is needed.
+    default: ${{ github.token }}
+  fail-on-inconclusive:
+    description: Fail the job if a check could not complete (robots, quotas, network, POST-only or missing evidence). This is not an endpoint failure claim.
+    default: 'true'
+outputs:
+  conclusion:
+    description: passing, review, failing or inconclusive; passing is only an unpaid snapshot.
+  max-risk-score:
+    description: Maximum observed heuristic score, or unknown. Not safety or Coinbase acceptance.
+  report-urls:
+    description: JSON array of public seven-day report URLs.
+  badge-markdown:
+    description: README Markdown for each dated report badge. Update its report ID after a new run.
+runs:
+  using: node24
+  main: dist/index.js

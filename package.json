@@ -1,0 +1,14 @@
+{
+  "name": "x402-lint-action",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Free unpaid x402 endpoint checks in GitHub Actions, operated by SpendPreflight",
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "test": "npm run build && node --test test/*.test.mjs"
+  },
+  "devDependencies": {"@types/node": "24.10.1", "typescript": "5.9.3"},
+  "license": "MIT"
+}
