@@ -1,5 +1,5 @@
 name: x402 Lint
-description: Free unpaid x402 challenge checks, heuristic Listing Guard score and public report badge. Operated by SpendPreflight.
+description: "SpendPreflight — trust and verification tools for stablecoin payments, built for AI agents and the people who run them."
 author: SpendPreflight
 branding:
   icon: check-circle

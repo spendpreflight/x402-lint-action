@@ -3,12 +3,15 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Free unpaid x402 endpoint checks in GitHub Actions, operated by SpendPreflight",
+  "description": "SpendPreflight — trust and verification tools for stablecoin payments, built for AI agents and the people who run them.",
   "scripts": {
     "build": "tsc",
     "typecheck": "tsc --noEmit",
     "test": "npm run build && node --test test/*.test.mjs"
   },
-  "devDependencies": {"@types/node": "24.10.1", "typescript": "5.9.3"},
+  "devDependencies": {
+    "@types/node": "24.10.1",
+    "typescript": "5.9.3"
+  },
   "license": "MIT"
 }

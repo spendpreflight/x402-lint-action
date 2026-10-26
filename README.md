@@ -1,5 +1,9 @@
 # x402 Lint
 
+SpendPreflight — trust and verification tools for stablecoin payments, built for AI agents and the people who run them.
+
+[All tools](https://spendpreflight.com/tools/) · [Trust and privacy](https://spendpreflight.com/trust.html)
+
 Free unpaid x402 endpoint checks in GitHub Actions, operated by **SpendPreflight**. No Lint API key, wallet or payment. Get a heuristic Listing Guard risk score, seven-day report and README badge on every push.
 
 Add these three lines to a job:
