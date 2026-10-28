@@ -18,6 +18,16 @@ Add these three lines to a job:
 
 Use a public, non-sensitive endpoint you operate. This is a GET-only snapshot; it cannot execute a POST request body, prove paid delivery, certify safety or guarantee Coinbase acceptance. A positive score may reflect legitimate documentation URLs.
 
+## New tools alongside the free Action
+
+The existing Lint snapshot includes a free passive Security Check coverage summary. The Action does not call paid tools or make payments.
+
+- [x402 Security Check](https://spendpreflight.com/tools/x402-security-check/): optionally inspect a full report from a current complete saved Lint snapshot for0.10 USDC, without another probe or a shared trial. Passive observations do not establish replay protection, paid-cache behavior or settlement correctness.
+- [Quote Check](https://spendpreflight.com/tools/quote-check/): compare a supplied exact quote with cached public evidence for0.001 USDC when usable; unknown without charge, no shared trial. It makes no target request and does not authorize payment.
+- [Seller Index](https://spendpreflight.com/tools/seller-index/): top three cached public matches free; extended results up to12 cost0.01 USDC only when extra matches exist. It makes no new crawl and does not certify seller safety.
+
+[Read the new-tools announcement](https://spendpreflight.com/blog/new-x402-verification-tools.html). These are optional web/API/MCP tools; the existing Action code, free-check quota and `@v1` release stay as documented below.
+
 ## Complete workflow
 
 ```yaml
