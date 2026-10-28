@@ -1,13 +1,39 @@
 name: Test x402 Lint Action
-on: [push, pull_request]
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+    paths-ignore: ['README.md', 'docs/**']
+  pull_request:
+    branches: [main]
+    paths-ignore: ['README.md', 'docs/**']
 permissions:
   contents: read
+concurrency:
+  group: action-tests-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 jobs:
   test:
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
+    name: test (ubuntu-latest)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run typecheck
+      - run: npm test
+      - name: Verify shipped runtime matches source
+        run: git diff --exit-code -- dist
+  test-windows:
+    name: test (windows-latest)
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    runs-on: windows-latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
