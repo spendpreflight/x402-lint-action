@@ -54,3 +54,16 @@ test('deduplication stops on a full bounded comment history instead of posting a
  let calls=0;assert.equal(await commentResults({repository:'seller/api',number:12},'fake','body',async()=>{calls++;return Response.json(Array(100).fill({body:'other'}));}),false);assert.equal(calls,3);
  assert.equal(await commentResults({repository:'seller/api',number:12},'fake','body',async()=>new Response('',{status:403})),false);
 });
+
+test('monitoring Markdown accepts only public UUIDs, never tokens or arbitrary Markdown',()=>{
+ const passing=assess(report());
+ const output=summary([passing],id);
+ assert.match(output.badges,/x402 Lint passing/);
+ assert.match(output.monitoringBadge,/Monitored by SpendPreflight/);
+ assert.match(output.body,/does not enroll or verify monitoring/);
+ assert.equal(summary([passing]).monitoringBadge,'');
+ for(const value of ['token-secret','../admin','x](https://evil.test)','']) {
+   if(value)assert.throws(()=>summary([passing],value));
+ }
+ assert.match(summary([assess(report({listingGuard:{riskScore:15}}))]).badges,/x402 Lint review/);
+});

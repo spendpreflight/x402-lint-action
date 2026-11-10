@@ -1,13 +1,15 @@
 import { appendFile, readFile } from 'node:fs/promises';
 import { randomUUID } from 'node:crypto';
-import { boolInput, urlsInput, lintUrls, summary, commentTarget, commentResults, OFFER } from './engine.js';
+import { boolInput, urlsInput, lintUrls, summary, commentTarget, commentResults, OFFER, monitoringMarkdown } from './engine.js';
 const escape = (s) => s.replaceAll('%', '%25').replaceAll('\r', '%0D').replaceAll('\n', '%0A');
 async function main() {
     const input = (name, fallback = '') => process.env['INPUT_' + name.toUpperCase()] ?? fallback;
     const urls = urlsInput(input('urls')), comment = boolInput(input('comment', 'true'), 'comment'), strict = boolInput(input('fail-on-inconclusive', 'true'), 'fail-on-inconclusive');
-    const items = await lintUrls(urls), result = summary(items);
+    const monitoringId = input('monitoring-id');
+    monitoringMarkdown(monitoringId); // validate before any Lint request
+    const items = await lintUrls(urls), result = summary(items, monitoringId);
     if (process.env.GITHUB_OUTPUT) {
-        for (const [name, value] of Object.entries({ 'conclusion': result.conclusion, 'max-risk-score': result.maxScore, 'report-urls': JSON.stringify(result.reports), 'badge-markdown': result.badges })) {
+        for (const [name, value] of Object.entries({ 'conclusion': result.conclusion, 'max-risk-score': result.maxScore, 'report-urls': JSON.stringify(result.reports), 'badge-markdown': result.badges, 'monitoring-badge-markdown': result.monitoringBadge })) {
             const delimiter = 'lint_' + randomUUID();
             await appendFile(process.env.GITHUB_OUTPUT, `${name}<<${delimiter}\n${value}\n${delimiter}\n`);
         }

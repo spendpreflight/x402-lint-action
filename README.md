@@ -103,3 +103,23 @@ Tests use synthetic responses and mock GitHub APIs, including the actual CLI ent
 The hosted Lint screen reports metadata_prompt_injection_review when bounded patterns match agent-directed instructions in discovery titles, descriptions, schemas or examples. It is a review warning, not proof of malicious intent or Coinbase rejection. Inspection-limit warnings remain explicit. This Action prioritizes the review code without copying untrusted metadata into logs or comments. No extra target request or payment is made. Hard errors still fail and incomplete reports remain inconclusive.
 
 Coinbase announced its policy on October 13, 2026: https://docs.cdp.coinbase.com/get-started/changelog . Its technical validator does not check that policy. Our pattern screen is not Coinbase certification; legitimate quoted examples can flag, and encoded, multilingual or novel instructions can evade it. Existing release tags are unchanged; hosted findings also reach older Action revisions.
+
+## README badges (v1.1.0)
+
+Copy `steps.lint.outputs.badge-markdown` for the dated Lint badge. The SVG displays
+passing only while the report is fresh and complete with no errors, warnings or
+positive risk score. Otherwise it displays review, failing or unknown. Replace the
+report ID after a new run; GitHub may cache images.
+
+```markdown
+[![x402 Lint](https://api.spendpreflight.com/v1/lint/reports/REPORT_UUID/badge.svg)](https://api.spendpreflight.com/lint/reports/REPORT_UUID)
+[![Monitored by SpendPreflight](https://api.spendpreflight.com/v1/sellers/SELLER_UUID/badge.svg)](https://api.spendpreflight.com/v1/sellers/SELLER_UUID/record)
+```
+
+Set optional `monitoring-id` to an **existing public seller UUID** for
+`monitoring-badge-markdown` output and the same snippet in the job summary. This
+does not register, activate or buy monitoring. Never supply a management token.
+The monitoring SVG is positive only during an active, unexpired period with a
+recent successful check. Stale, failing and inactive states remain visible.
+Set `comment: 'false'` when no PR comment is wanted. Neither badge proves safety,
+paid delivery or directory acceptance. Use v1.1.0 or its full release commit SHA; preparing this change does not move existing v1/v1.0.0 tags.

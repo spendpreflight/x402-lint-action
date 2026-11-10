@@ -1,12 +1,13 @@
 import {appendFile,readFile} from 'node:fs/promises';
 import {randomUUID} from 'node:crypto';
-import {boolInput,urlsInput,lintUrls,summary,commentTarget,commentResults,OFFER} from './engine.js';
+import {boolInput,urlsInput,lintUrls,summary,commentTarget,commentResults,OFFER,monitoringMarkdown} from './engine.js';
 const escape=(s:string)=>s.replaceAll('%','%25').replaceAll('\r','%0D').replaceAll('\n','%0A');
 async function main(){
  const input=(name:string,fallback='')=>process.env['INPUT_'+name.toUpperCase()]??fallback;
  const urls=urlsInput(input('urls')),comment=boolInput(input('comment','true'),'comment'),strict=boolInput(input('fail-on-inconclusive','true'),'fail-on-inconclusive');
- const items=await lintUrls(urls),result=summary(items);
- if(process.env.GITHUB_OUTPUT){for(const [name,value] of Object.entries({'conclusion':result.conclusion,'max-risk-score':result.maxScore,'report-urls':JSON.stringify(result.reports),'badge-markdown':result.badges})){const delimiter='lint_'+randomUUID();await appendFile(process.env.GITHUB_OUTPUT,`${name}<<${delimiter}\n${value}\n${delimiter}\n`);}}
+ const monitoringId=input('monitoring-id'); monitoringMarkdown(monitoringId); // validate before any Lint request
+ const items=await lintUrls(urls),result=summary(items,monitoringId);
+ if(process.env.GITHUB_OUTPUT){for(const [name,value] of Object.entries({'conclusion':result.conclusion,'max-risk-score':result.maxScore,'report-urls':JSON.stringify(result.reports),'badge-markdown':result.badges,'monitoring-badge-markdown':result.monitoringBadge})){const delimiter='lint_'+randomUUID();await appendFile(process.env.GITHUB_OUTPUT,`${name}<<${delimiter}\n${value}\n${delimiter}\n`);}}
  if(process.env.GITHUB_STEP_SUMMARY)await appendFile(process.env.GITHUB_STEP_SUMMARY,result.body);
  console.log(`x402 Lint: ${result.conclusion}; max heuristic risk ${result.maxScore}/100. Unpaid GET snapshot only.`);
  for(const report of result.reports)console.log('Report: '+report);
