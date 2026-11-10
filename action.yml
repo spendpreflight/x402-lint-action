@@ -8,6 +8,9 @@ inputs:
   urls:
     description: Public, non-sensitive HTTPS endpoint URLs, one per line (maximum five). No credentials or request bodies.
     required: true
+  monitoring-id:
+    description: Optional existing public seller UUID for a monitoring badge. Never a management token; does not enroll or activate monitoring.
+    required: false
   comment:
     description: Update one derived summary on same-repository pull requests when the token permits it. Forks are skipped.
     default: 'true'
@@ -26,6 +29,8 @@ outputs:
     description: JSON array of public seven-day report URLs.
   badge-markdown:
     description: README Markdown for each dated report badge. Update its report ID after a new run.
+  monitoring-badge-markdown:
+    description: Markdown for the existing monitoring record badge, or empty when no monitoring-id was supplied.
 runs:
   using: node24
   main: dist/index.js

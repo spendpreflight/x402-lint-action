@@ -94,12 +94,20 @@ export async function lintUrls(urls, fetcher = fetch) {
     }
     return results;
 }
-export function summary(items) {
+export function monitoringMarkdown(id) {
+    if (!id)
+        return '';
+    if (!/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/.test(id))
+        throw Error('monitoring-id must be a public seller UUID');
+    return `[![Monitored by SpendPreflight](${API}/v1/sellers/${id}/badge.svg)](${API}/v1/sellers/${id}/record)`;
+}
+export function summary(items, monitoringId = '') {
     const conclusion = items.some(x => x.conclusion === 'failing') ? 'failing' : items.some(x => x.conclusion === 'inconclusive') ? 'inconclusive' : items.some(x => x.conclusion === 'review') ? 'review' : 'passing';
     const scores = items.map(x => x.score).filter((x) => x !== null);
-    const badges = items.filter(x => x.report && x.badge).map(x => `[![x402 Lint](${x.badge})](${x.report})`).join('\n');
-    const body = `${MARKER}\n## x402 Lint\n\n| Check | Result | Risk / 100 | Report |\n| --- | --- | --- | --- |\n${items.map((x, i) => `| ${i + 1} | ${x.conclusion} | ${x.score ?? 'unknown'} | ${x.report ? `[Seven-day snapshot](${x.report})` : 'Unavailable'} |`).join('\n')}\n\n${items.map((x, i) => `- Check ${i + 1}: ${x.reason}${x.codes.length ? ' Codes: ' + x.codes.map(c => '\x60' + c + '\x60').join(', ') + '.' : ''}`).join('\n')}\n\nHeuristic scores can include legitimate URLs. This does not verify safety, paid delivery, facilitator support or Coinbase acceptance. GET-only; POST bodies are not tested. Free quotas and robots apply.\n\n${OFFER} First 10 eligible Basic registrations; no wallet to start, then 9 USDC / 31 days, manual renewal. Alerts are best effort.\n\n<details><summary>README badges (dated, expire after seven days)</summary>\n\n\x60\x60\x60markdown\n${badges}\n\x60\x60\x60\n\nBadges read existing reports only. Update the report ID after a new run; GitHub may cache images. Passing covers only the fields tested.\n</details>\n`;
-    return { conclusion, maxScore: scores.length ? String(Math.max(...scores)) : 'unknown', reports: items.flatMap(x => x.report ? [x.report] : []), badges, body };
+    const badges = items.filter(x => x.report && x.badge).map(x => `[![x402 Lint ${x.conclusion}](${x.badge})](${x.report})`).join('\n');
+    const monitoringBadge = monitoringMarkdown(monitoringId);
+    const body = `${MARKER}\n## x402 Lint\n\n| Check | Result | Risk / 100 | Report |\n| --- | --- | --- | --- |\n${items.map((x, i) => `| ${i + 1} | ${x.conclusion} | ${x.score ?? 'unknown'} | ${x.report ? `[Seven-day snapshot](${x.report})` : 'Unavailable'} |`).join('\n')}\n\n${items.map((x, i) => `- Check ${i + 1}: ${x.reason}${x.codes.length ? ' Codes: ' + x.codes.map(c => '\x60' + c + '\x60').join(', ') + '.' : ''}`).join('\n')}\n\nHeuristic scores can include legitimate URLs. This does not verify safety, paid delivery, facilitator support or Coinbase acceptance. GET-only; POST bodies are not tested. Free quotas and robots apply.\n\n${OFFER} First 10 eligible Basic registrations; no wallet to start, then 9 USDC / 31 days, manual renewal. Alerts are best effort.\n\n<details><summary>README badges (dated, expire after seven days)</summary>\n\n\x60\x60\x60markdown\n${badges}${monitoringBadge ? '\n' + monitoringBadge : ''}\n\x60\x60\x60\n\nMonitoring badges read the existing seller record; supplying an ID does not enroll or verify monitoring. Inactive, stale or failing records cannot display the positive monitored state. Badges read existing reports only. Update the report ID after a new run; GitHub may cache images. Passing covers only the fields tested.\n</details>\n`;
+    return { conclusion, maxScore: scores.length ? String(Math.max(...scores)) : 'unknown', reports: items.flatMap(x => x.report ? [x.report] : []), badges, monitoringBadge, body };
 }
 /** No privileged fork workaround. Only the invoking repository's ordinary pull_request event. */
 export function commentTarget(event, eventName, repository) {
