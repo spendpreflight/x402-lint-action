@@ -104,7 +104,7 @@ The hosted Lint screen reports metadata_prompt_injection_review when bounded pat
 
 Coinbase announced its policy on October 13, 2026: https://docs.cdp.coinbase.com/get-started/changelog . Its technical validator does not check that policy. Our pattern screen is not Coinbase certification; legitimate quoted examples can flag, and encoded, multilingual or novel instructions can evade it. Existing release tags are unchanged; hosted findings also reach older Action revisions.
 
-## README badges (prepared source; release pending)
+## README badges (v1.1.0)
 
 Copy `steps.lint.outputs.badge-markdown` for the dated Lint badge. The SVG displays
 passing only while the report is fresh and complete with no errors, warnings or
@@ -122,5 +122,4 @@ does not register, activate or buy monitoring. Never supply a management token.
 The monitoring SVG is positive only during an active, unexpired period with a
 recent successful check. Stale, failing and inactive states remain visible.
 Set `comment: 'false'` when no PR comment is wanted. Neither badge proves safety,
-paid delivery or directory acceptance. Use the reviewed release commit after
-publication; preparing this change does not move existing v1/v1.0.0 tags.
+paid delivery or directory acceptance. Use v1.1.0 or its full release commit SHA; preparing this change does not move existing v1/v1.0.0 tags.
